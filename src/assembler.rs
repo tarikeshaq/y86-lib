@@ -10,11 +10,16 @@ use crate::number_parser;
 mod parser;
 use parser::ICode;
 
+/// A struct to hold bytes read from y86
+/// bytes is a vector holding the bytes
 pub struct Y86Assembler {
     bytes: Vec<u8>,
 }
 
 impl Y86Assembler {
+    /// file_name: a string holding the file name to read
+    /// reads a Y86 file and generates a Y86Assembler with the
+    /// machine code content
     pub fn from_file(file_name: String) -> Result<Self, Box<dyn Error>> {
         let lines_iter = read_lines(file_name)?;
         let lines: Vec<String> = lines_iter.map(|val| val.unwrap()).collect();
@@ -25,12 +30,15 @@ impl Y86Assembler {
         })
     }
 
+    /// Saves a the machine code content into a file specified by 
+    /// file_name
     pub fn save_file(&mut self, file_name: String) -> Result<(), Box<dyn Error>> {
         let mut file = File::create(file_name)?;
         file.write_all(&self.bytes)?;
         Ok(())
     }
 
+    /// Prints the machine code content onto stdout
     pub fn print(&self) {
         self.bytes.iter().for_each(|b| print!("{:02x}", b));
         println!();
